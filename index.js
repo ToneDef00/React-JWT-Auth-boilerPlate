@@ -1,34 +1,33 @@
-const express = require('express');
-const winston = require("winston");
-const morgan = require('morgan')
-const mongoose = require('mongoose');
-const cors = require('cors');
-
+const express   = require('express');
+const morgan    = require('morgan');
+const mongoose  = require('mongoose');
+const cors      = require('cors');
 
 const app = express();
 
-//db setup
+// Database setup
 
-mongoose.connect('mongodb://localhost:auth/auth', {useNewUrlParser: true, useCreateIndex: true});
+mongoose.connect('mongodb://localhost:auth/auth', { useNewUrlParser: true, useCreateIndex: true });
 
-//middleware setup
-
+// App middlewares setup
 app.use(morgan('combined'));
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
-//production setup
-//serve the build folder during production only
-if(process.env.NODE_ENV==='production'){
-    app.use(express.static('client/build'));
+
+// If we are in production, serve our clients build folder.
+// This folder is created during production
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
 }
 
-// routes setup
+// Routes setup
 const routes = require('./routes');
 app.use(routes);
 
+// Server setup
 const PORT = process.env.PORT || 3001;
 
 
-app.listen(PORT, () => console.log(`server started on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server started on PORT: ${PORT}`));
